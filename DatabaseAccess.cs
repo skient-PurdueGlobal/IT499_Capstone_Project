@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Diagnostics;
 
 namespace IT499_Capstone_Project
 {
@@ -10,7 +10,7 @@ namespace IT499_Capstone_Project
         #endregion
 
         #region Class Constructors
-        public DatabaseAccess() 
+        public DatabaseAccess()
         {
             //Update database directory path.
             string path = Environment.CurrentDirectory;
@@ -43,6 +43,37 @@ namespace IT499_Capstone_Project
             cartItemsTA.Fill(ds.cart_item);
 
             return ds;
+        }
+        public bool Update_Database(appDataSet ds)
+        {
+            //ds.AcceptChanges();
+
+            //Define table adapters.
+            appDataSetTableAdapters.userTableAdapter userTA = new appDataSetTableAdapters.userTableAdapter();
+            appDataSetTableAdapters.productsTableAdapter productsTA = new appDataSetTableAdapters.productsTableAdapter();
+            appDataSetTableAdapters.order_detailsTableAdapter ordDetailsTA = new appDataSetTableAdapters.order_detailsTableAdapter();
+            appDataSetTableAdapters.order_itemsTableAdapter ordItemsTA = new appDataSetTableAdapters.order_itemsTableAdapter();
+            appDataSetTableAdapters.saved_cartsTableAdapter savedCartTA = new appDataSetTableAdapters.saved_cartsTableAdapter();
+            appDataSetTableAdapters.cart_itemTableAdapter cartItemsTA = new appDataSetTableAdapters.cart_itemTableAdapter();
+
+            //Update tables.
+            try
+            {
+                ordItemsTA.Update(ds.order_items);
+                ordDetailsTA.Update(ds.order_details);
+                cartItemsTA.Update(ds.cart_item);
+                savedCartTA.Update(ds.saved_carts);
+                userTA.Update(ds.user);
+                productsTA.Update(ds.products);
+
+                ds.AcceptChanges();
+
+                return true;
+            } catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return false;
+            }
         }
         #endregion
 
